@@ -50,7 +50,7 @@ If you have any suggestion, please feel free to open an issue or make a pull req
 
 ## For more information
 
-![Discord]({https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white})(https://discord.gg/bHX5sNFCYU)
+![Discord]({https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white})
 
 Thank you for your interest! 🙏 If you liked the project, please consider leaving a ⭐
 !
