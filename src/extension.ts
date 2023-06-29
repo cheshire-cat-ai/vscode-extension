@@ -43,7 +43,6 @@ export function activate(context: vscode.ExtensionContext) {
 			const highlighted = editor.document.getText(selectionRange);
 
 			cat.send(highlighted, {
-				prefix: "",
 				use_declarative_memory: false,
 				use_procedural_memory: false,
 				use_episodic_memory: false
