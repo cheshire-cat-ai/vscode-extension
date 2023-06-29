@@ -45,7 +45,7 @@
             "title": "Choose a Langue Model",
             "description": "Configure a Large Language Model.\n[Configure](command:cheshire-cat-ai.toSettings)",
             "media": {
-              "markdown": "assets/installation.md"
+              "markdown": "assets/walkthroughs.md"
             },
             "completionEvents": [
               "onCommand:cheshire-cat-ai.toSettings"
