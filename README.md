@@ -48,9 +48,15 @@ Basic code commenting.
 
 If you have any suggestion, please feel free to open an issue or make a pull request!
 
+* Test our extension
+* Share it on social media
+* Fork it and implement new features
+
 ## For more information
 
-![Discord]({https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white})
+<p>
+<a href="https://discord.gg/bHX5sNFCYU" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="Link Discord" width="80" /></a>
+</p>
 
 Thank you for your interest! 🙏 If you liked the project, please consider leaving a ⭐
 !
