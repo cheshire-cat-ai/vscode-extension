@@ -44,8 +44,12 @@
             "id": "setLLM",
             "title": "Choose a Langue Model",
             "description": "Configure a Large Language Model.\n[Configure](command:cheshire-cat-ai.toSettings)",
-            "media": { "markdown": "assets/installation.md"},
-            "completionEvents": ["onCommand:cheshire-cat-ai.toSettings"]
+            "media": {
+              "markdown": "assets/installation.md"
+            },
+            "completionEvents": [
+              "onCommand:cheshire-cat-ai.toSettings"
+            ]
           }
         ]
       }
@@ -66,7 +70,10 @@
         "CheshireCat.ConfigureLanguageModel": {
           "type": "string",
           "default": "ChatGPT",
-          "enum": ["ChatGPT", "HuggingFace Hub"],
+          "enum": [
+            "ChatGPT",
+            "HuggingFace Hub"
+          ],
           "description": "Choose and configure your favourite Large Language Model"
         },
         "CheshireCat.ApiKey": {
@@ -107,6 +114,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "ccat-api": "^0.4.1"
+    "ccat-api": "^0.4.1",
+    "generator-code": "^1.7.7"
   }
 }
