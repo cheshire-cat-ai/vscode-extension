@@ -17,7 +17,7 @@ To use it select some code → right-click → select `CheshireCat: Comment code
 
 ## Requirements
 
-The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here]()).
+The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here](https://github.com/nicola-corbellini/cat_code_commenter)).
 
 ## Extension Settings
 
@@ -30,19 +30,6 @@ This extension contributes the following settings:
 
 > **Note**
 > Many of the settings are the same you would write in the `.env` file of the Cheshire Cat.
-
-## Known Issues
-
-
-## Release Notes
-
-
-### 0.0.1
-
-Basic code commenting.
-
-## Roadmap
-
 
 # Contributing
 
