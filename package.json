@@ -72,7 +72,15 @@
           "default": "ChatGPT",
           "enum": [
             "ChatGPT",
-            "HuggingFace Hub"
+            "GPT-3",
+            "Cohere",
+            "HuggingFace Hub",
+            "HuggingFace Endpoint",
+            "HuggingFace TextGen Inference",
+            "Azure OpenAI Completion Models",
+            "Azure OpenAI, Chat Models",
+            "Anthropic",
+            "Google PaLM"
           ],
           "description": "Choose and configure your favourite Large Language Model"
         },

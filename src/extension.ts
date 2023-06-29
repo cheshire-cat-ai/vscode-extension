@@ -1,5 +1,90 @@
-import vscode from 'vscode';
+import vscode, { languages } from 'vscode';
 import { CatClient } from 'ccat-api';
+
+
+function getModelConfig(ccatConfig: vscode.WorkspaceConfiguration): [string, Object] {
+	const name = "LLMOpenAIChatConfig";
+	const requestBody = {
+			"openai_api_key": ccatConfig.ApiKey
+			};
+	switch(ccatConfig.ConfigureLanguageModel) {
+		case "GPT-3": {
+			const name = "LLMOpenAIConfig";
+			const requestBody = {
+				"openai_api_key": ccatConfig.ApiKey
+			};
+			break;
+		}
+		case "Cohere": {
+			const name = "LLMCohereConfig";
+			const requestBody = {
+				"cohere_api_key": ccatConfig.ApiKey
+			};
+			break;
+		}
+		case "HuggingFace Hub": {
+			const name = "LLMHuggingFaceHubConfig";
+			const requestBody = {
+				"repo_id": null,
+				"huggingfacehub_api_token": ccatConfig.ApiKey
+			};
+			break;
+		}
+		case "HuggingFace Endpoint": {
+			const name = "LLMHuggingFaceEndpointConfig";
+			const requestBody = {
+				"endpoint_url": null,
+				"huggingfacehub_api_token": ccatConfig.ApiKey
+			};
+			break;
+		}
+		case "HuggingFace TextGen Inference": {
+			const name = "LLMHuggingFaceTextGenInferenceConfig";
+			const requestBody = {
+				"inference_server_url": null
+			};
+			break;
+		}
+		case "Azure OpenAI Completion Models": {
+			const name = "LLMAzureOpenAIConfig";
+			const requestBody = {
+				"openai_api_key": ccatConfig.ApiKey,
+				"openai_api_base": null
+			};
+			break;
+		}
+		case "Azure OpenAI Chat Models": {
+			const name = "LLMAzureChatOpenAIConfig";
+			const requestBody = {
+				"openai_api_key": ccatConfig.ApiKey,
+				"openai_api_base": null,
+				"deployment_name": null
+			};
+			break;
+		}
+		case "Anthropic": {
+			const name = "LLMAnthropicConfig";
+			const requestBody = {
+				"anthropic_api_key": ccatConfig.ApiKey
+			};
+			break;
+		}
+		case "Google PaLM": {
+			const name = "LLMGooglePalmConfig";
+			const requestBody = {
+				"google_api_key": ccatConfig.ApiKey
+			};
+			break;
+		}
+		default:
+			const name = "LLMOpenAIChatConfig";
+			const requestBody = {
+				"openai_api_key": ccatConfig.ApiKey
+			};
+			return [name, requestBody];
+	}
+	return [name, requestBody];
+}
 
 export function activate(context: vscode.ExtensionContext) {
 	// Get extension configuration
@@ -17,9 +102,28 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	cat.api.settingsLargeLanguageModel.upsertLlmSetting(
+		"LLMOpenAIChatConfig",
+		{
+			"openai_api_key": ccatConfig.ApiKey
+		}
+	);
+
 	vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration('CheshireCat')) {
-			//cat.api.settingsLargeLanguageModel.upsertLlmSetting()
+			// Get Language Model Name
+			// let languageModelName, requestBody = getModelConfig(ccatConfig.ConfigureLanguageModel);
+			
+			/*
+			Per il momento ho fatto quella schifezza che vedi su, ma non funziona molto bene. 
+			Se sai un modo migliore cancella tutto e rifai come vuoi. 
+			*/
+			cat.api.settingsLargeLanguageModel.upsertLlmSetting(
+				"LLMOpenAIChatConfig",
+				{
+					"openai_api_key": ccatConfig.ApiKey
+				}
+			);
 		}
     });
 
@@ -49,10 +153,20 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 			
 			cat.onMessage(data => {
-				console.log(data.content);
-				editor.edit(editBuilder => {
-					editBuilder.replace(selectionRange, data.content);
-				});
+				if (data.error) {
+					if ((data as any).valid_code){
+						editor.edit(editBuilder => {
+							editBuilder.replace(selectionRange, data.content);
+						});
+					}
+					else {
+						vscode.window.showErrorMessage("The highlighted text may not be valid code. Try again please");
+					}
+				}
+				else {
+					vscode.window.showErrorMessage("Something went wrong. Try again please");
+				}
+				
 			});
 		}
 	});
