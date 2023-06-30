@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 			
 			cat.onMessage(data => {
-				if (data.error) {
+				if (!data.error) {
 					if ((data as any).valid_code) {
 						editor.edit(editBuilder => {
 							editBuilder.replace(selectionRange, data.content);
