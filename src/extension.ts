@@ -1,88 +1,66 @@
 import vscode, { languages } from 'vscode';
 import { CatClient } from 'ccat-api';
 
+const ModelConfig = [
+	"ChatGPT | gpt-3.5-turbo",
+	"GPT-3 | text-davinci-003",
+	"Cohere | command",
+	"HuggingFace Hub | starcoder",
+	"HuggingFace Hub | falcon-7b-instruct"
+] as const;
 
-function getModelConfig(ccatConfig: vscode.WorkspaceConfiguration) {
-	let name = "LLMOpenAIChatConfig";
-	let requestBody: object = {
-		"openai_api_key": ccatConfig.ApiKey
-	};
-	switch (ccatConfig.LanguageModel) {
-		case "GPT-3": {
+
+function getModelConfig(llm: string, apiKey: string) {
+	let name = "", requestBody = {};
+	switch (llm as typeof ModelConfig[number]) {
+		case "ChatGPT | gpt-3.5-turbo": {
+			name = "LLMOpenAIChatConfig";
+			requestBody = {
+				"openai_api_key": apiKey,
+				"model_name": "gpt-3.5-turbo"
+			};
+			break;
+		}
+		case "GPT-3 | text-davinci-003": {
 			name = "LLMOpenAIConfig";
 			requestBody = {
-				"openai_api_key": ccatConfig.ApiKey
+				"openai_api_key": apiKey,
+				"model_name": "text-davinci-003"
 			};
 			break;
 		}
-		case "Cohere": {
+		case "Cohere | command": {
 			name = "LLMCohereConfig";
 			requestBody = {
-				"cohere_api_key": ccatConfig.ApiKey
+				"cohere_api_key": apiKey,
+				"model": "command"
 			};
 			break;
 		}
-		case "HuggingFace Hub": {
+		case "HuggingFace Hub | falcon-7b-instruct": {
 			name = "LLMHuggingFaceHubConfig";
 			requestBody = {
-				"repo_id": null,
-				"huggingfacehub_api_token": ccatConfig.ApiKey
+				"repo_id": "falcon-7b-instruct",
+				"huggingfacehub_api_token": apiKey
 			};
 			break;
 		}
-		case "HuggingFace Endpoint": {
-			name = "LLMHuggingFaceEndpointConfig";
+		case "HuggingFace Hub | starcoder": {
+			name = "LLMHuggingFaceHubConfig";
 			requestBody = {
-				"endpoint_url": null,
-				"huggingfacehub_api_token": ccatConfig.ApiKey
-			};
-			break;
-		}
-		case "HuggingFace TextGen Inference": {
-			name = "LLMHuggingFaceTextGenInferenceConfig";
-			requestBody = {
-				"inference_server_url": null
-			};
-			break;
-		}
-		case "Azure OpenAI Completion Models": {
-			name = "LLMAzureOpenAIConfig";
-			requestBody = {
-				"openai_api_key": ccatConfig.ApiKey,
-				"openai_api_base": null
-			};
-			break;
-		}
-		case "Azure OpenAI Chat Models": {
-			name = "LLMAzureChatOpenAIConfig";
-			requestBody = {
-				"openai_api_key": ccatConfig.ApiKey,
-				"openai_api_base": null,
-				"deployment_name": null
-			};
-			break;
-		}
-		case "Anthropic": {
-			name = "LLMAnthropicConfig";
-			requestBody = {
-				"anthropic_api_key": ccatConfig.ApiKey
-			};
-			break;
-		}
-		case "Google PaLM": {
-			name = "LLMGooglePalmConfig";
-			requestBody = {
-				"google_api_key": ccatConfig.ApiKey
+				"repo_id": "starcoder",
+				"huggingfacehub_api_token": apiKey
 			};
 			break;
 		}
 		default:
-			name = "LLMOpenAIChatConfig";
-			requestBody = {
-				"openai_api_key": ccatConfig.ApiKey
-			};
+			name = "LLMDefaultConfig";
+			requestBody = {};
 	}
-	return [name, requestBody];
+	return {
+		name, 
+		requestBody
+	};
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -91,9 +69,11 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Initialize Cat Client
 	const cat = new CatClient({
+		authKey: ccatConfig.AuthKey,
 		baseUrl: ccatConfig.BaseUrl,
 		port: ccatConfig.Port,
 		ws: {
+			path: ccatConfig.WebsocketPath,
 			onFailed: (err) => {
 				vscode.window.showErrorMessage(`Error Code: ${err}`);
 			},
@@ -101,28 +81,14 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
-	cat.api.settingsLargeLanguageModel.upsertLlmSetting(
-		"LLMOpenAIChatConfig",
-		{
-			"openai_api_key": ccatConfig.ApiKey
-		}
-	);
+	const llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
+
+	cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
 
 	vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration('CheshireCat')) {
-			// Get Language Model Name
-			// let languageModelName, requestBody = getModelConfig(ccatConfig.LanguageModel);
-			
-			/*
-			Per il momento ho fatto quella schifezza che vedi su, ma non funziona molto bene. 
-			Se sai un modo migliore cancella tutto e rifai come vuoi. 
-			*/
-			cat.api.settingsLargeLanguageModel.upsertLlmSetting(
-				"LLMOpenAIChatConfig",
-				{
-					"openai_api_key": ccatConfig.ApiKey
-				}
-			);
+			cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
+			vscode.window.showWarningMessage("Updating LLM configuration...");
 		}
     });
 
@@ -136,7 +102,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Command to comment the code
 	let commentCode = vscode.commands.registerCommand("cheshire-cat-ai.commentCode", () => {
-		
 		const editor = vscode.window.activeTextEditor;
 		const selection = editor?.selection;
 
@@ -153,19 +118,16 @@ export function activate(context: vscode.ExtensionContext) {
 			
 			cat.onMessage(data => {
 				if (data.error) {
-					if ((data as any).valid_code){
+					if ((data as any).valid_code) {
 						editor.edit(editBuilder => {
 							editBuilder.replace(selectionRange, data.content);
 						});
-					}
-					else {
+					} else {
 						vscode.window.showErrorMessage("The highlighted text may not be valid code. Try again please");
 					}
-				}
-				else {
+				} else {
 					vscode.window.showErrorMessage("Something went wrong. Try again please");
 				}
-				
 			});
 		}
 	});

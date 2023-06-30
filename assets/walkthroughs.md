@@ -1,4 +1,4 @@
-# Thank you for downloading our extension!
+# Thank you for downloading our extension
 
 > **Note**  
 > Before you can start using the extension it's mandatory you set a Language Model and its API key.
@@ -13,6 +13,7 @@ If you like our extension, please consider leaving a ⭐ to the [repository](htt
 The official project is the [Cheshire Cat AI](https://github.com/cheshire-cat-ai/core).
 
 ### Join the Cheshire Cat discord
-<p>
-<a href="https://discord.gg/bHX5sNFCYU" target="blank"><img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="Link Discord" width="80" /></a>
-</p>
+
+<a href="https://discord.gg/bHX5sNFCYU" target="blank">
+    <img align="center" src="https://raw.githubusercontent.com/rahuldkjain/github-profile-readme-generator/master/src/images/icons/Social/discord.svg" alt="Link Discord" width="48" />
+</a>

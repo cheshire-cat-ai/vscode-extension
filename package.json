@@ -2,6 +2,7 @@
   "name": "cheshire-cat-ai",
   "publisher": "Cheshire-Cat-AI",
   "displayName": "Cheshire Cat AI",
+  "icon": "assets/icon.png",
   "description": "VSCode extension to communicate with the Cheshire Cat AI!",
   "version": "0.0.1",
   "engines": {
@@ -63,20 +64,20 @@
           "default": 1865,
           "description": "Connection port for WebSocket and endpoints"
         },
+        "CheshireCatAI.WebsocketPath": {
+          "type": "string",
+          "default": "ws",
+          "description": "Websocket path to which connect"
+        },
         "CheshireCatAI.LanguageModel": {
           "type": "string",
           "default": "ChatGPT",
           "enum": [
-            "ChatGPT",
-            "GPT-3",
-            "Cohere",
-            "HuggingFace Hub",
-            "HuggingFace Endpoint",
-            "HuggingFace TextGen Inference",
-            "Azure OpenAI Completion Models",
-            "Azure OpenAI, Chat Models",
-            "Anthropic",
-            "Google PaLM"
+            "ChatGPT | gpt-3.5-turbo",
+            "GPT-3 | text-davinci-003",
+            "Cohere | command",
+            "HuggingFace Hub | starcoder",
+            "HuggingFace Hub | falcon-7b-instruct"
           ],
           "description": "Choose and configure your favourite Large Language Model"
         },
@@ -84,6 +85,11 @@
           "type": "string",
           "default": null,
           "description": "Personal API key on Language Model vendor's account"
+        },
+        "CheshireCatAI.AuthKey": {
+          "type": "string",
+          "default": null,
+          "description": "(Optional) Personal key to authenticate the Cheshire Cat endpoints"
         }
       }
     },

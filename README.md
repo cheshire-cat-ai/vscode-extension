@@ -19,17 +19,19 @@ The extension requires to have the Cheshire Cat installed and running (instructi
 
 ## Extension Settings
 
-> Tip: for the smoothest experience, we recommend using ChatGPT.
+> **Note**
+> Many of the settings are the same you would write in the `.env` file of the Cheshire Cat.
 
 This extension contributes the following settings:
 
-* `CheshireCatAI.BaseUrl`: connection URL. Default to `localhost`.
-* `CheshireCatAI.Port`: connection port. Default to `1865`.
-* `CheshireCatAI.LanguageModel`: Language Model to use to comment the code.
-* `CheshireCatAI.ApiKey`: Personal API key from the Language Model vendor account.
+- `CheshireCatAI.BaseUrl`: connection URL. Default to `localhost`.
+- `CheshireCatAI.Port`: connection port. Default to `1865`.
+- `CheshireCatAI.LanguageModel`: Language Model to use to comment the code. Default to `ChatGPT | gpt-3.5-turbo`.
+- `CheshireCatAI.WebsocketPath`: Language Model to use to comment the code. Default to `ws`.
+- `CheshireCatAI.ApiKey`: Personal API key from the Language Model vendor account.
+- `CheshireCatAI.AuthKey`: Personal key to authenticate the Cheshire Cat endpoints. **(Optional)**
 
-> **Note**
-> Many of the settings are the same you would write in the `.env` file of the Cheshire Cat.
+> Tip: for the smoothest experience, we recommend using ChatGPT.
 
 ## Contributing
 
