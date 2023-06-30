@@ -17,20 +17,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "cheshire-cat-ai.helloWorld",
-        "title": "CheshireCat helloWorld"
-      },
-      {
         "command": "cheshire-cat-ai.sendMessage",
-        "title": "CheshireCat Message"
+        "title": "Cheshire Cat AI Message"
       },
       {
         "command": "cheshire-cat-ai.toSettings",
-        "title": "CheshireCat Settings"
+        "title": "Cheshire Cat AI Settings"
       },
       {
         "command": "cheshire-cat-ai.commentCode",
-        "title": "CheshireCat: Comment code"
+        "title": "Cheshire Cat AI: Comment code"
       }
     ],
     "walkthroughs": [
@@ -55,19 +51,19 @@
       }
     ],
     "configuration": {
-      "title": "CheshireCat",
+      "title": "Cheshire Cat AI",
       "properties": {
-        "CheshireCat.BaseUrl": {
+        "CheshireCatAI.BaseUrl": {
           "type": "string",
           "default": "localhost",
           "description": "Base URL for WebSocket and endpoints connection"
         },
-        "CheshireCat.Port": {
+        "CheshireCatAI.Port": {
           "type": "integer",
           "default": 1865,
           "description": "Connection port for WebSocket and endpoints"
         },
-        "CheshireCat.ConfigureLanguageModel": {
+        "CheshireCatAI.LanguageModel": {
           "type": "string",
           "default": "ChatGPT",
           "enum": [
@@ -84,7 +80,7 @@
           ],
           "description": "Choose and configure your favourite Large Language Model"
         },
-        "CheshireCat.ApiKey": {
+        "CheshireCatAI.ApiKey": {
           "type": "string",
           "default": null,
           "description": "Personal API key on Language Model vendor's account"

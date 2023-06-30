@@ -2,60 +2,60 @@ import vscode, { languages } from 'vscode';
 import { CatClient } from 'ccat-api';
 
 
-function getModelConfig(ccatConfig: vscode.WorkspaceConfiguration): [string, Object] {
-	const name = "LLMOpenAIChatConfig";
-	const requestBody = {
-			"openai_api_key": ccatConfig.ApiKey
-			};
-	switch(ccatConfig.ConfigureLanguageModel) {
+function getModelConfig(ccatConfig: vscode.WorkspaceConfiguration) {
+	let name = "LLMOpenAIChatConfig";
+	let requestBody: object = {
+		"openai_api_key": ccatConfig.ApiKey
+	};
+	switch (ccatConfig.LanguageModel) {
 		case "GPT-3": {
-			const name = "LLMOpenAIConfig";
-			const requestBody = {
+			name = "LLMOpenAIConfig";
+			requestBody = {
 				"openai_api_key": ccatConfig.ApiKey
 			};
 			break;
 		}
 		case "Cohere": {
-			const name = "LLMCohereConfig";
-			const requestBody = {
+			name = "LLMCohereConfig";
+			requestBody = {
 				"cohere_api_key": ccatConfig.ApiKey
 			};
 			break;
 		}
 		case "HuggingFace Hub": {
-			const name = "LLMHuggingFaceHubConfig";
-			const requestBody = {
+			name = "LLMHuggingFaceHubConfig";
+			requestBody = {
 				"repo_id": null,
 				"huggingfacehub_api_token": ccatConfig.ApiKey
 			};
 			break;
 		}
 		case "HuggingFace Endpoint": {
-			const name = "LLMHuggingFaceEndpointConfig";
-			const requestBody = {
+			name = "LLMHuggingFaceEndpointConfig";
+			requestBody = {
 				"endpoint_url": null,
 				"huggingfacehub_api_token": ccatConfig.ApiKey
 			};
 			break;
 		}
 		case "HuggingFace TextGen Inference": {
-			const name = "LLMHuggingFaceTextGenInferenceConfig";
-			const requestBody = {
+			name = "LLMHuggingFaceTextGenInferenceConfig";
+			requestBody = {
 				"inference_server_url": null
 			};
 			break;
 		}
 		case "Azure OpenAI Completion Models": {
-			const name = "LLMAzureOpenAIConfig";
-			const requestBody = {
+			name = "LLMAzureOpenAIConfig";
+			requestBody = {
 				"openai_api_key": ccatConfig.ApiKey,
 				"openai_api_base": null
 			};
 			break;
 		}
 		case "Azure OpenAI Chat Models": {
-			const name = "LLMAzureChatOpenAIConfig";
-			const requestBody = {
+			name = "LLMAzureChatOpenAIConfig";
+			requestBody = {
 				"openai_api_key": ccatConfig.ApiKey,
 				"openai_api_base": null,
 				"deployment_name": null
@@ -63,32 +63,31 @@ function getModelConfig(ccatConfig: vscode.WorkspaceConfiguration): [string, Obj
 			break;
 		}
 		case "Anthropic": {
-			const name = "LLMAnthropicConfig";
-			const requestBody = {
+			name = "LLMAnthropicConfig";
+			requestBody = {
 				"anthropic_api_key": ccatConfig.ApiKey
 			};
 			break;
 		}
 		case "Google PaLM": {
-			const name = "LLMGooglePalmConfig";
-			const requestBody = {
+			name = "LLMGooglePalmConfig";
+			requestBody = {
 				"google_api_key": ccatConfig.ApiKey
 			};
 			break;
 		}
 		default:
-			const name = "LLMOpenAIChatConfig";
-			const requestBody = {
+			name = "LLMOpenAIChatConfig";
+			requestBody = {
 				"openai_api_key": ccatConfig.ApiKey
 			};
-			return [name, requestBody];
 	}
 	return [name, requestBody];
 }
 
 export function activate(context: vscode.ExtensionContext) {
 	// Get extension configuration
-	const ccatConfig = vscode.workspace.getConfiguration('CheshireCat');
+	const ccatConfig = vscode.workspace.getConfiguration('CheshireCatAI');
 
 	// Initialize Cat Client
 	const cat = new CatClient({
@@ -112,7 +111,7 @@ export function activate(context: vscode.ExtensionContext) {
 	vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration('CheshireCat')) {
 			// Get Language Model Name
-			// let languageModelName, requestBody = getModelConfig(ccatConfig.ConfigureLanguageModel);
+			// let languageModelName, requestBody = getModelConfig(ccatConfig.LanguageModel);
 			
 			/*
 			Per il momento ho fatto quella schifezza che vedi su, ma non funziona molto bene. 

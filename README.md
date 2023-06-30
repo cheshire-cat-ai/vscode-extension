@@ -23,10 +23,10 @@ The extension requires to have the Cheshire Cat installed and running (instructi
 
 This extension contributes the following settings:
 
-* `CheshireCat.BaseUrl`: connection URL. Default to `localhost`.
-* `CheshireCat.Port`: connection port. Default to `1865`.
-* `CheshireCat.ConfigureLanguageModel`: Language Model to use to comment the code.
-* `CheshireCat.ApiKey`: Personal API key from the Language Model vendor account.
+* `CheshireCatAI.BaseUrl`: connection URL. Default to `localhost`.
+* `CheshireCatAI.Port`: connection port. Default to `1865`.
+* `CheshireCatAI.LanguageModel`: Language Model to use to comment the code.
+* `CheshireCatAI.ApiKey`: Personal API key from the Language Model vendor account.
 
 > **Note**
 > Many of the settings are the same you would write in the `.env` file of the Cheshire Cat.
