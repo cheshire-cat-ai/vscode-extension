@@ -5,10 +5,10 @@ const ModelConfig = [
 	"ChatGPT | gpt-3.5-turbo",
 	"GPT-3 | text-davinci-003",
 	"Cohere | command",
-	"HuggingFace Hub | starcoder",
 	"HuggingFace Hub | falcon-7b-instruct"
 ] as const;
 
+const extId = "Cheshire-Cat-AI.cheshire-cat-ai";
 
 function getModelConfig(llm: string, apiKey: string) {
 	let name = "", requestBody = {};
@@ -40,15 +40,7 @@ function getModelConfig(llm: string, apiKey: string) {
 		case "HuggingFace Hub | falcon-7b-instruct": {
 			name = "LLMHuggingFaceHubConfig";
 			requestBody = {
-				"repo_id": "falcon-7b-instruct",
-				"huggingfacehub_api_token": apiKey
-			};
-			break;
-		}
-		case "HuggingFace Hub | starcoder": {
-			name = "LLMHuggingFaceHubConfig";
-			requestBody = {
-				"repo_id": "starcoder",
+				"repo_id": "tiiuae/falcon-7b-instruct",
 				"huggingfacehub_api_token": apiKey
 			};
 			break;
@@ -84,20 +76,36 @@ export function activate(context: vscode.ExtensionContext) {
 	const llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
 
 	cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
-
-	vscode.workspace.onDidChangeConfiguration(e => {
+	
+	/*vscode.workspace.onDidChangeConfiguration(e => {
         if (e.affectsConfiguration('CheshireCat')) {
 			cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
 			vscode.window.showWarningMessage("Updating LLM configuration...");
 		}
-    });
+    });*/
 
 	// Open setup page on activation
-	vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `Cheshire-Cat-AI.cheshire-cat-ai#firstInstall`);
+	vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
 
 	// Command to open extension settings page
 	let toSettings = vscode.commands.registerCommand("cheshire-cat-ai.toSettings", () => {
-		vscode.commands.executeCommand('workbench.action.openSettings', '@ext:Cheshire-Cat-AI.cheshire-cat-ai');
+		vscode.commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
+	});
+
+	let restartSettings = vscode.commands.registerCommand("cheshire-cat-ai.restartSettings", async () => {
+		vscode.window.showWarningMessage("Updating LLM configuration...");
+		await cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
+		vscode.window.showInformationMessage("LLM configuration updated successfully!");
+	});
+
+	let fetchPlugins = vscode.commands.registerCommand("cheshire-cat-ai.fetchPlugins", async () => {
+		const plugins = await cat.api.plugins.listAvailablePlugins();
+		const hasPlugin = plugins.installed.some(v => v.id === 'cat_code_commenter');
+		if (hasPlugin) {
+			vscode.window.showInformationMessage("Plugin installed successfully!");
+		} else {
+			vscode.window.showErrorMessage("You didn't install the Cheshire Cat plugin correctly!");
+		}
 	});
 
 	// Command to comment the code
@@ -132,8 +140,10 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 
+	context.subscriptions.push(restartSettings);
 	context.subscriptions.push(toSettings);
 	context.subscriptions.push(commentCode);
+	context.subscriptions.push(fetchPlugins);
 }
 
 export function deactivate() {}

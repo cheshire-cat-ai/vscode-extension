@@ -18,16 +18,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "cheshire-cat-ai.sendMessage",
-        "title": "Cheshire Cat AI Message"
-      },
-      {
         "command": "cheshire-cat-ai.toSettings",
-        "title": "Cheshire Cat AI Settings"
+        "title": "Cheshire Cat: Go to Settings"
       },
       {
         "command": "cheshire-cat-ai.commentCode",
-        "title": "Cheshire Cat AI: Comment code"
+        "title": "Cheshire Cat AI: Comment Code"
+      },
+      {
+        "command": "cheshire-cat-ai.restartSettings",
+        "title": "Cheshire Cat AI: Restart Settings"
+      },
+      {
+        "command": "cheshire-cat-ai.fetchPlugins",
+        "title": "Cheshire Cat: Fetch Plugin"
       }
     ],
     "walkthroughs": [
@@ -42,10 +46,21 @@
             "title": "Choose a Langue Model",
             "description": "Configure a Large Language Model.\n[Configure](command:cheshire-cat-ai.toSettings)",
             "media": {
-              "markdown": "assets/walkthroughs.md"
+              "markdown": "assets/step1.md"
             },
             "completionEvents": [
               "onCommand:cheshire-cat-ai.toSettings"
+            ]
+          },
+          {
+            "id": "downloadPlugin",
+            "title": "Download the Cat plugin",
+            "description": "Download and install the Cat Code Commenter plugin.\n[Download](https://github.com/nicola-corbellini/cat_code_commenter/archive/refs/heads/main.zip)",
+            "media": {
+              "markdown": "assets/step2.md"
+            },
+            "completionEvents": [
+              "onCommand:cheshire-cat-ai.fetchPlugins"
             ]
           }
         ]
@@ -71,12 +86,11 @@
         },
         "CheshireCatAI.LanguageModel": {
           "type": "string",
-          "default": "ChatGPT",
+          "default": "ChatGPT | gpt-3.5-turbo",
           "enum": [
             "ChatGPT | gpt-3.5-turbo",
             "GPT-3 | text-davinci-003",
             "Cohere | command",
-            "HuggingFace Hub | starcoder",
             "HuggingFace Hub | falcon-7b-instruct"
           ],
           "description": "Choose and configure your favourite Large Language Model"
@@ -99,7 +113,17 @@
           "command": "cheshire-cat-ai.commentCode",
           "group": "CheshireCat"
         }
-      ]
+      ],
+      "commandPalette": [
+        {
+            "command": "cheshire-cat-ai.toSettings",
+            "when": "false"
+        },
+        {
+          "command": "cheshire-cat-ai.fetchPlugins",
+          "when": "false"
+        }
+    ]
     }
   },
   "scripts": {
