@@ -79,16 +79,17 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage("The Cheshire Cat disappeared!");
 	});
 
-	const llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
+	let llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
 
 	cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
 	
-	/*vscode.workspace.onDidChangeConfiguration(e => {
-        if (e.affectsConfiguration('CheshireCat')) {
+	vscode.workspace.onDidChangeConfiguration(e => {
+        if (e.affectsConfiguration('CheshireCatAI')) {
+			llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
 			cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
 			vscode.window.showWarningMessage("Updating LLM configuration...");
 		}
-    });*/
+    });		
 
 	// Open setup page on activation
 	vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
