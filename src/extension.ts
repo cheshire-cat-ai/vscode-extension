@@ -71,6 +71,12 @@ export function activate(context: vscode.ExtensionContext) {
 			},
 			retries: 3
 		}
+	}).onConnected(() => {
+		vscode.window.showInformationMessage("The Cheshire Cat appeared!");
+	});
+
+	cat.onDisconnected(() => {
+		vscode.window.showInformationMessage("The Cheshire Cat disappeared!");
 	});
 
 	const llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
@@ -94,6 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let restartSettings = vscode.commands.registerCommand("cheshire-cat-ai.restartSettings", async () => {
 		vscode.window.showWarningMessage("Updating LLM configuration...");
+		console.log(llmSetting, ccatConfig)
 		await cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
 		vscode.window.showInformationMessage("LLM configuration updated successfully!");
 	});
@@ -128,7 +135,7 @@ export function activate(context: vscode.ExtensionContext) {
 				if (!data.error) {
 					const json = JSON.parse(data.content);
 					vscode.window.showInformationMessage(`Detected language: ${json.language}`);
-					if (json.hasOwnProperty("commented_code")) {
+					if (json["code"]) {
 						editor.edit(editBuilder => {
 							editBuilder.replace(selectionRange, json.commented_code);
 						});
