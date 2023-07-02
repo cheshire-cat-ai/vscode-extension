@@ -137,7 +137,7 @@ export function activate(context: vscode.ExtensionContext) {
 					vscode.window.showInformationMessage(`Detected language: ${json.language}`);
 					if (json["code"]) {
 						editor.edit(editBuilder => {
-							editBuilder.replace(selectionRange, json.commented_code);
+							editBuilder.replace(selectionRange, json.code);
 						});
 					} else {
 						vscode.window.showErrorMessage("The highlighted text may not be valid code. Try again please");
