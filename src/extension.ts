@@ -59,6 +59,13 @@ export function activate(context: vscode.ExtensionContext) {
 	// Get extension configuration
 	const ccatConfig = vscode.workspace.getConfiguration('CheshireCatAI');
 
+	// Get programming language
+	/*vscode.workspace.onDidChangeTextDocument(e => {
+		console.log(e)
+		let text = vscode.window.activeTextEditor?.document.languageId
+		console.log(text)
+	})*/
+
 	// Initialize Cat Client
 	const cat = new CatClient({
 		authKey: ccatConfig.AuthKey,
@@ -148,6 +155,11 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 			});
 		}
+	});
+
+	// Command to comment the code
+	let createFunction = vscode.commands.registerCommand("cheshire-cat-ai.createFunction", () => {
+		
 	});
 
 	context.subscriptions.push(restartSettings);

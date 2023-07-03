@@ -32,6 +32,10 @@
       {
         "command": "cheshire-cat-ai.fetchPlugins",
         "title": "Cheshire Cat: Fetch Plugin"
+      },
+      {
+        "command": "cheshire-cat-ai.createFunction",
+        "title": "Cheshire Cat: Function from Comment"
       }
     ],
     "walkthroughs": [
