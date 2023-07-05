@@ -136,8 +136,9 @@ export function activate(context: vscode.ExtensionContext) {
 			cat.send(highlighted, {
 				use_declarative_memory: false,
 				use_procedural_memory: false,
-				use_episodic_memory: false
-			});
+				use_episodic_memory: false,
+				task: "comment"
+			} as any);
 			
 			cat.onMessage(data => {
 				if (!data.error) {
@@ -158,7 +159,32 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	// Command to comment the code
-	let createFunction = vscode.commands.registerCommand("cheshire-cat-ai.createFunction", () => {
+	let makeFunction = vscode.commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
+		const editor = vscode.window.activeTextEditor;
+		const selection = editor?.selection;
+
+		if (selection && !selection.isEmpty) {
+			// Get text selection
+			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
+			const highlighted = editor.document.getText(selectionRange);
+
+			cat.send(highlighted, {
+				use_declarative_memory: false,
+				use_procedural_memory: false,
+				use_episodic_memory: false,
+				task: "function"
+			} as any);
+			
+			cat.onMessage(data => {
+				if (!data.error) {
+					editor.edit(editBuilder => {
+						editBuilder.replace(selectionRange, data.content);
+					});
+				} else {
+					vscode.window.showErrorMessage("Something went wrong. Try again please");
+				}
+			});
+		}
 		
 	});
 
@@ -166,6 +192,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(toSettings);
 	context.subscriptions.push(commentCode);
 	context.subscriptions.push(fetchPlugins);
+	context.subscriptions.push(makeFunction);
 }
 
 export function deactivate() {}

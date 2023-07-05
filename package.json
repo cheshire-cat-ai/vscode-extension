@@ -34,7 +34,7 @@
         "title": "Cheshire Cat: Fetch Plugin"
       },
       {
-        "command": "cheshire-cat-ai.createFunction",
+        "command": "cheshire-cat-ai.makeFunction",
         "title": "Cheshire Cat: Function from comment"
       }
     ],
