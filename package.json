@@ -95,7 +95,8 @@
             "ChatGPT | gpt-3.5-turbo",
             "GPT-3 | text-davinci-003",
             "Cohere | command",
-            "HuggingFace Hub | falcon-7b-instruct"
+            "HuggingFace Hub | falcon-7b-instruct",
+            "HuggingFace Hub | starcoder"
           ],
           "description": "Choose and configure your favourite Large Language Model"
         },

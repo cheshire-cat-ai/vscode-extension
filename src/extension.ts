@@ -5,7 +5,7 @@ const ModelConfig = [
 	"ChatGPT | gpt-3.5-turbo",
 	"GPT-3 | text-davinci-003",
 	"Cohere | command",
-	"HuggingFace Hub | falcon-7b-instruct"
+	"HuggingFace Hub | starcoder"
 ] as const;
 
 const extId = "Cheshire-Cat-AI.cheshire-cat-ai";
@@ -37,10 +37,10 @@ function getModelConfig(llm: string, apiKey: string) {
 			};
 			break;
 		}
-		case "HuggingFace Hub | falcon-7b-instruct": {
+		case "HuggingFace Hub | starcoder": {
 			name = "LLMHuggingFaceHubConfig";
 			requestBody = {
-				"repo_id": "tiiuae/falcon-7b-instruct",
+				"repo_id": "bigcode/starcoder",
 				"huggingfacehub_api_token": apiKey
 			};
 			break;
@@ -57,14 +57,7 @@ function getModelConfig(llm: string, apiKey: string) {
 
 export function activate(context: vscode.ExtensionContext) {
 	// Get extension configuration
-	const ccatConfig = vscode.workspace.getConfiguration('CheshireCatAI');
-
-	// Get programming language
-	/*vscode.workspace.onDidChangeTextDocument(e => {
-		console.log(e)
-		let text = vscode.window.activeTextEditor?.document.languageId
-		console.log(text)
-	})*/
+	let ccatConfig = vscode.workspace.getConfiguration('CheshireCatAI');
 
 	// Initialize Cat Client
 	const cat = new CatClient({
@@ -86,18 +79,6 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage("The Cheshire Cat disappeared!");
 	});
 
-	let llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
-
-	cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
-	
-	vscode.workspace.onDidChangeConfiguration(e => {
-        if (e.affectsConfiguration('CheshireCatAI')) {
-			llmSetting = getModelConfig(ccatConfig.LanguageModel, ccatConfig.ApiKey);
-			cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
-			vscode.window.showWarningMessage("Updating LLM configuration...");
-		}
-    });		
-
 	// Open setup page on activation
 	vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
 
@@ -108,7 +89,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let restartSettings = vscode.commands.registerCommand("cheshire-cat-ai.restartSettings", async () => {
 		vscode.window.showWarningMessage("Updating LLM configuration...");
-		console.log(llmSetting, ccatConfig)
+		const updatedConfig = vscode.workspace.getConfiguration('CheshireCatAI');
+		let llmSetting = getModelConfig(updatedConfig.LanguageModel, updatedConfig.ApiKey);
 		await cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
 		vscode.window.showInformationMessage("LLM configuration updated successfully!");
 	});
@@ -132,33 +114,48 @@ export function activate(context: vscode.ExtensionContext) {
 			// Get text selection
 			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
-
-			cat.send(highlighted, {
-				use_declarative_memory: false,
-				use_procedural_memory: false,
-				use_episodic_memory: false,
-				task: "comment"
-			} as any);
-			
-			cat.onMessage(data => {
-				if (!data.error) {
-					const json = JSON.parse(data.content);
-					vscode.window.showInformationMessage(`Detected language: ${json.language}`);
-					if (json["code"]) {
-						editor.edit(editBuilder => {
-							editBuilder.replace(selectionRange, json.code);
-						});
+			const updatedConfig = vscode.workspace.getConfiguration('CheshireCatAI');
+			if (ModelConfig.includes(updatedConfig.LanguageModel, 3)) {
+				vscode.window.showErrorMessage("Automated commenting is only available with OpenAI or Cohere models");
+			} else {
+				cat.send(highlighted, {
+					use_declarative_memory: false,
+					use_procedural_memory: false,
+					use_episodic_memory: false,
+					task: "comment"
+				} as any);
+				
+				cat.onMessage(data => {
+					if (!data.error) {
+						if (data.content.startsWith("```")) {
+							let lines = data.content.split("\n")
+							console.log(lines)
+							lines.splice(0, 1)
+							lines.splice(lines.length - 1, 1)
+							console.log(lines)
+							let formattedAnswer = lines.join("\n")
+							console.log(formattedAnswer)
+							const json = JSON.parse(formattedAnswer);
+						} else {
+						const json = JSON.parse(data.content);
+						vscode.window.showInformationMessage(`Detected language: ${json.language}`);
+						if (json["code"]) {
+							editor.edit(editBuilder => {
+								editBuilder.replace(selectionRange, json.code);
+							});
+						} else {
+							vscode.window.showErrorMessage("The highlighted text may not be valid code. Try again please");
+						}
+							}			
 					} else {
-						vscode.window.showErrorMessage("The highlighted text may not be valid code. Try again please");
+						vscode.window.showErrorMessage("Something went wrong. Try again please");
 					}
-				} else {
-					vscode.window.showErrorMessage("Something went wrong. Try again please");
-				}
-			});
+				});
+			}
 		}
 	});
 
-	// Command to comment the code
+
 	let makeFunction = vscode.commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
 		const editor = vscode.window.activeTextEditor;
 		const selection = editor?.selection;
@@ -177,9 +174,19 @@ export function activate(context: vscode.ExtensionContext) {
 			
 			cat.onMessage(data => {
 				if (!data.error) {
-					editor.edit(editBuilder => {
-						editBuilder.replace(selectionRange, data.content);
-					});
+					const updatedConfig = vscode.workspace.getConfiguration('CheshireCatAI');
+					if (ModelConfig.includes(updatedConfig.LanguageModel, 2)) {
+						editor.edit(editBuilder => {
+							const createdFunction = `${highlighted}\n${data.content}`
+							editBuilder.replace(selectionRange, createdFunction);
+						});
+					}
+					else {
+						editor.edit(editBuilder => {
+							editBuilder.replace(selectionRange, data.content);
+						});
+					}
+					
 				} else {
 					vscode.window.showErrorMessage("Something went wrong. Try again please");
 				}
