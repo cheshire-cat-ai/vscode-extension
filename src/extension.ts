@@ -130,22 +130,14 @@ export function activate(context: ExtensionContext) {
 				});
 				
 				cat.onMessage(data => {
-					if (data.content.startsWith("```")) {
-						let lines = data.content.split("\n")
-						lines.splice(0, 1)
-						lines.splice(lines.length - 1, 1)
-						let formattedAnswer = lines.join("\n")
-						const json = JSON.parse(formattedAnswer);
+					const json = JSON.parse(data.content);
+					window.showInformationMessage(`Detected language: ${json.language}`);
+					if (json.code) {
+						editor.edit(editBuilder => {
+							editBuilder.replace(selectionRange, json.code);
+						});
 					} else {
-						const json = JSON.parse(data.content);
-						window.showInformationMessage(`Detected language: ${json.language}`);
-						if (json["code"]) {
-							editor.edit(editBuilder => {
-								editBuilder.replace(selectionRange, json.code);
-							});
-						} else {
-							window.showErrorMessage("The highlighted text may not be valid code. Try again please");
-						}
+						window.showErrorMessage("The highlighted text may not be valid code. Try again please");
 					}
 				}).onError(() => {
 					window.showErrorMessage("Something went wrong. Try again please");
