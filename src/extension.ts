@@ -1,4 +1,4 @@
-import vscode, { languages } from 'vscode';
+import { window, ExtensionContext, workspace, commands, Range } from 'vscode';
 import { CatClient } from 'ccat-api';
 
 const ModelConfig = [
@@ -55,9 +55,9 @@ function getModelConfig(llm: string, apiKey: string) {
 	};
 }
 
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context: ExtensionContext) {
 	// Get extension configuration
-	let ccatConfig = vscode.workspace.getConfiguration('CheshireCatAI');
+	const ccatConfig = workspace.getConfiguration('CheshireCatAI');
 
 	// Initialize Cat Client
 	const cat = new CatClient({
@@ -67,102 +67,98 @@ export function activate(context: vscode.ExtensionContext) {
 		ws: {
 			path: ccatConfig.WebsocketPath,
 			onFailed: (err) => {
-				vscode.window.showErrorMessage(`Error Code: ${err}`);
+				window.showErrorMessage(`Error Code: ${err}`);
 			},
 			retries: 3
 		}
 	}).onConnected(() => {
-		vscode.window.showInformationMessage("The Cheshire Cat appeared!");
-	});
-
-	cat.onDisconnected(() => {
-		vscode.window.showInformationMessage("The Cheshire Cat disappeared!");
+		window.showInformationMessage("The Cheshire Cat appeared!");
+	}).onDisconnected(() => {
+		window.showInformationMessage("The Cheshire Cat disappeared!");
 	});
 
 	// Open setup page on activation
-	vscode.commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
+	commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
 
 	// Command to open extension settings page
-	let toSettings = vscode.commands.registerCommand("cheshire-cat-ai.toSettings", () => {
-		vscode.commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
+	const toSettings = commands.registerCommand("cheshire-cat-ai.toSettings", () => {
+		commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
 	});
 
-	let restartSettings = vscode.commands.registerCommand("cheshire-cat-ai.restartSettings", async () => {
-		vscode.window.showWarningMessage("Updating LLM configuration...");
-		const updatedConfig = vscode.workspace.getConfiguration('CheshireCatAI');
+	const restartSettings = commands.registerCommand("cheshire-cat-ai.restartSettings", async () => {
+		window.showWarningMessage("Updating LLM configuration...");
+		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
 		let llmSetting = getModelConfig(updatedConfig.LanguageModel, updatedConfig.ApiKey);
-		await cat.api.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
-		vscode.window.showInformationMessage("LLM configuration updated successfully!");
+		await cat.api?.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
+		window.showInformationMessage("LLM configuration updated successfully!");
 	});
 
-	let fetchPlugins = vscode.commands.registerCommand("cheshire-cat-ai.fetchPlugins", async () => {
-		const plugins = await cat.api.plugins.listAvailablePlugins();
-		const hasPlugin = plugins.installed.some(v => v.id === 'cat_code_commenter');
+	const fetchPlugins = commands.registerCommand("cheshire-cat-ai.fetchPlugins", async () => {
+		const plugins = await cat.api?.plugins.listAvailablePlugins();
+		const hasPlugin = plugins?.installed.some(v => v.id === 'cat_code_commenter');
 		if (hasPlugin) {
-			vscode.window.showInformationMessage("Plugin installed successfully!");
+			window.showInformationMessage("Plugin installed successfully!");
 		} else {
-			vscode.window.showErrorMessage("You didn't install the Cheshire Cat plugin correctly!");
+			window.showErrorMessage("You didn't install the Cheshire Cat plugin correctly!");
 		}
 	});
 
 	// Command to comment the code
-	let commentCode = vscode.commands.registerCommand("cheshire-cat-ai.commentCode", () => {
-		const editor = vscode.window.activeTextEditor;
+	const commentCode = commands.registerCommand("cheshire-cat-ai.commentCode", () => {
+		const editor = window.activeTextEditor;
 		const selection = editor?.selection;
 
 		if (selection && !selection.isEmpty) {
 			// Get text selection
-			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
+			const selectionRange = new Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
-			const updatedConfig = vscode.workspace.getConfiguration('CheshireCatAI');
+			const updatedConfig = workspace.getConfiguration('CheshireCatAI');
 			if (ModelConfig.includes(updatedConfig.LanguageModel, 3)) {
-				vscode.window.showErrorMessage("Automated commenting is only available with OpenAI or Cohere models");
+				window.showErrorMessage("Automated commenting is only available with OpenAI or Cohere models");
 			} else {
 				cat.send(highlighted, {
 					use_declarative_memory: false,
 					use_procedural_memory: false,
 					use_episodic_memory: false,
 					task: "comment"
-				} as any);
+				});
 				
 				cat.onMessage(data => {
-					if (!data.error) {
-						if (data.content.startsWith("```")) {
-							let lines = data.content.split("\n")
-							console.log(lines)
-							lines.splice(0, 1)
-							lines.splice(lines.length - 1, 1)
-							console.log(lines)
-							let formattedAnswer = lines.join("\n")
-							console.log(formattedAnswer)
-							const json = JSON.parse(formattedAnswer);
-						} else {
+					if (data.content.startsWith("```")) {
+						let lines = data.content.split("\n")
+						console.log(lines)
+						lines.splice(0, 1)
+						lines.splice(lines.length - 1, 1)
+						console.log(lines)
+						let formattedAnswer = lines.join("\n")
+						console.log(formattedAnswer)
+						const json = JSON.parse(formattedAnswer);
+					} else {
 						const json = JSON.parse(data.content);
-						vscode.window.showInformationMessage(`Detected language: ${json.language}`);
+						window.showInformationMessage(`Detected language: ${json.language}`);
 						if (json["code"]) {
 							editor.edit(editBuilder => {
 								editBuilder.replace(selectionRange, json.code);
 							});
 						} else {
-							vscode.window.showErrorMessage("The highlighted text may not be valid code. Try again please");
+							window.showErrorMessage("The highlighted text may not be valid code. Try again please");
 						}
-							}			
-					} else {
-						vscode.window.showErrorMessage("Something went wrong. Try again please");
 					}
+				}).onError(() => {
+					window.showErrorMessage("Something went wrong. Try again please");
 				});
 			}
 		}
 	});
 
 
-	let makeFunction = vscode.commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
-		const editor = vscode.window.activeTextEditor;
+	const makeFunction = commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
+		const editor = window.activeTextEditor;
 		const selection = editor?.selection;
 
 		if (selection && !selection.isEmpty) {
 			// Get text selection
-			const selectionRange = new vscode.Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
+			const selectionRange = new Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
 
 			cat.send(highlighted, {
@@ -173,23 +169,20 @@ export function activate(context: vscode.ExtensionContext) {
 			} as any);
 			
 			cat.onMessage(data => {
-				if (!data.error) {
-					const updatedConfig = vscode.workspace.getConfiguration('CheshireCatAI');
-					if (ModelConfig.includes(updatedConfig.LanguageModel, 2)) {
-						editor.edit(editBuilder => {
-							const createdFunction = `${highlighted}\n${data.content}`
-							editBuilder.replace(selectionRange, createdFunction);
-						});
-					}
-					else {
-						editor.edit(editBuilder => {
-							editBuilder.replace(selectionRange, data.content);
-						});
-					}
-					
-				} else {
-					vscode.window.showErrorMessage("Something went wrong. Try again please");
+				const updatedConfig = workspace.getConfiguration('CheshireCatAI');
+				if (ModelConfig.includes(updatedConfig.LanguageModel, 2)) {
+					editor.edit(editBuilder => {
+						const createdFunction = `${highlighted}\n${data.content}`
+						editBuilder.replace(selectionRange, createdFunction);
+					});
 				}
+				else {
+					editor.edit(editBuilder => {
+						editBuilder.replace(selectionRange, data.content);
+					});
+				}
+			}).onError(() => {
+				window.showErrorMessage("Something went wrong. Try again please");
 			});
 		}
 		

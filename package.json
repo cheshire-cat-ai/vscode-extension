@@ -142,18 +142,18 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/node": "20.3.2",
-    "@types/vscode": "^1.79.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.1",
-    "@typescript-eslint/parser": "^5.60.1",
+    "@types/node": "20.4.5",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.2.0",
+    "@typescript-eslint/parser": "^6.2.0",
     "@vscode/test-electron": "^2.3.3",
-    "eslint": "^8.43.0",
-    "glob": "^10.3.1",
+    "eslint": "^8.46.0",
+    "glob": "^10.3.3",
     "mocha": "^10.2.0",
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "ccat-api": "^0.4.1",
+    "ccat-api": "^0.6.1",
     "generator-code": "^1.7.7"
   }
 }
