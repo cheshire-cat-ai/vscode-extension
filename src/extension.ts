@@ -107,7 +107,7 @@ export function activate(context: ExtensionContext) {
 	const commentCode = commands.registerCommand("cheshire-cat-ai.commentCode", () => {
 		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
 
-		if (["HuggingFace Hub | starcoder"].includes(updatedConfig.LanguageModel)) {
+		if (["HuggingFace Hub | starcoder", "Cohere | command"].includes(updatedConfig.LanguageModel)) {
 			window.showErrorMessage("This LLM does not support this command");
 			return
 		}
