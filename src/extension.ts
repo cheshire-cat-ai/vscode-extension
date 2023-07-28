@@ -105,14 +105,20 @@ export function activate(context: ExtensionContext) {
 
 	// Command to comment the code
 	const commentCode = commands.registerCommand("cheshire-cat-ai.commentCode", () => {
+		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
+
+		if (["HuggingFace Hub | starcoder"].includes(updatedConfig.LanguageModel)) {
+			window.showErrorMessage("This LLM does not support this command");
+			return
+		}
+		
 		const editor = window.activeTextEditor;
 		const selection = editor?.selection;
-
+		
 		if (selection && !selection.isEmpty) {
 			// Get text selection
 			const selectionRange = new Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
-			const updatedConfig = workspace.getConfiguration('CheshireCatAI');
 			if (ModelConfig.includes(updatedConfig.LanguageModel, 3)) {
 				window.showErrorMessage("Automated commenting is only available with OpenAI or Cohere models");
 			} else {
@@ -126,12 +132,9 @@ export function activate(context: ExtensionContext) {
 				cat.onMessage(data => {
 					if (data.content.startsWith("```")) {
 						let lines = data.content.split("\n")
-						console.log(lines)
 						lines.splice(0, 1)
 						lines.splice(lines.length - 1, 1)
-						console.log(lines)
 						let formattedAnswer = lines.join("\n")
-						console.log(formattedAnswer)
 						const json = JSON.parse(formattedAnswer);
 					} else {
 						const json = JSON.parse(data.content);
@@ -153,6 +156,13 @@ export function activate(context: ExtensionContext) {
 
 
 	const makeFunction = commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
+		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
+
+		if ([""].includes(updatedConfig.LanguageModel)) {
+			window.showErrorMessage("This LLM does not support this command");
+			return
+		}
+		
 		const editor = window.activeTextEditor;
 		const selection = editor?.selection;
 
