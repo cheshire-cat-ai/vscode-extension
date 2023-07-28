@@ -67,7 +67,7 @@ export function activate(context: ExtensionContext) {
 		ws: {
 			path: ccatConfig.WebsocketPath,
 			onFailed: (err) => {
-				window.showErrorMessage(`Error Code: ${err}`);
+				window.showErrorMessage(err.description);
 			},
 			retries: 3
 		}
@@ -99,7 +99,7 @@ export function activate(context: ExtensionContext) {
 		if (hasPlugin) {
 			window.showInformationMessage("Plugin installed successfully!");
 		} else {
-			window.showErrorMessage("You didn't install the Cheshire Cat plugin correctly!");
+			window.showErrorMessage("You didn't install the Code Commenter plugin correctly!");
 		}
 	});
 
