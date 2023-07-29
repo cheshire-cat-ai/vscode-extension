@@ -39,7 +39,7 @@
       },
       {
         "command": "cheshire-cat-ai.makeFunction",
-        "title": "Cheshire Cat: Function from comment"
+        "title": "Cheshire Cat AI: Function from comment"
       }
     ],
     "walkthroughs": [
@@ -120,6 +120,10 @@
       "editor/context": [
         {
           "command": "cheshire-cat-ai.commentCode",
+          "group": "CheshireCat"
+        },
+        {
+          "command": "cheshire-cat-ai.makeFunction",
           "group": "CheshireCat"
         }
       ],

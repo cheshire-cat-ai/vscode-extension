@@ -4,11 +4,21 @@ This is the Visual Studio Code extension to integrate the [Cheshire Cat](https:/
 
 ## Features
 
-Currently, the extension allows generating automatic comments on a portion of selected code.
+Currently, the extension has two features:
+1. generating automatic comments on a portion of selected code,
+2. generating a function starting from the name and a comment.
 
 ## Usage
 
-To use it select some code → right-click → select `CheshireCat: Comment code`.
+### Comment code
+To use it highlight some code → right-click → select `CheshireCat: Comment code`.  
+
+> **Warning**
+> Please, note that only OpenAI models can support the `CheshireCat: Comment code` functionalities for the moment.
+
+### Make function
+
+To use it highlight some code → right-click → select `CheshireCat: Make function`.
 
 > **Warning**
 > This extension relies on the Cheshire Cat and expect to find a running instance of it.
@@ -30,6 +40,12 @@ This extension contributes the following settings:
 - `CheshireCatAI.WebsocketPath`: Language Model to use to comment the code. Default to `ws`.
 - `CheshireCatAI.ApiKey`: Personal API key from the Language Model vendor account.
 - `CheshireCatAI.AuthKey`: Personal key to authenticate the Cheshire Cat endpoints. **(Optional)**
+
+Once set your preferences, you can make them effective with `CTRL`+`Shift`+p → `Cheshire Cat AI: Restart Settings`.
+
+### Currently available Language Models
+
+By now, we only support `gpt-3.5-turbo`, `text-davinci-003` from OpenAI, `command` from Cohere and `starcoder` from HugginFace Hub. 
 
 > Tip: for the smoothest experience, we recommend using ChatGPT.
 
