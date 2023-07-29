@@ -86,13 +86,18 @@ export async function activate(context: ExtensionContext) {
 
 	const settings = await cat.api?.settingsLargeLanguageModel.getLlmSettings()
 	const selected = settings?.settings.find(v => v.name === settings.selected_configuration)
+	const plugins = await cat.api?.plugins.listAvailablePlugins();
+	hasPlugin = plugins?.installed.some(v => v.id === 'cat_code_commenter') ?? false;
 	
 	if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
 		isCompatible = false
 		window.showWarningMessage("Your LLM configuration is not supported!");
 		commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
-	} else if (!ccatConfig.ApiKey) {
+	} else if (!hasPlugin) {
 		commands.executeCommand('workbench.action.openWalkthrough', `${extId}#firstInstall`, true);
+	} else {
+		const updatedConfig = getConfig()
+		//updatedConfig.update('CheshireCatAI.LanguageModel', selected.value)
 	}
 
 	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.toSettings", () => {
