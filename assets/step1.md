@@ -9,7 +9,7 @@ Currently, the extension allows commenting code snippets using many Language Mod
 
 ## More info
 
-If you like our extension, please consider leaving a ⭐ to the [repository](https://github.com/zAlweNy26/ccat-vscode-ext).
+If you like our extension, please consider leaving a ⭐ to the [repository](https://github.com/cheshire-cat-ai/vscode-extension).
 
 The official project is the [Cheshire Cat AI](https://github.com/cheshire-cat-ai/core).
 

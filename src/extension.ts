@@ -8,7 +8,7 @@ const ModelConfig = [
 	"HuggingFace Hub | starcoder"
 ] as const;
 
-const extId = "Cheshire-Cat-AI.cheshire-cat-ai";
+const extId = "CheshireCatAI.cheshire-cat-ai";
 
 function getModelConfig(llm: string, apiKey: string) {
 	let name = "", requestBody = {};
@@ -78,7 +78,11 @@ export function activate(context: ExtensionContext) {
 	});
 
 	// Open setup page on activation
-	commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
+	// commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
+
+	if (ccatConfig.ApiKey === "") {
+		commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`, true);
+	}
 
 	// Command to open extension settings page
 	const toSettings = commands.registerCommand("cheshire-cat-ai.toSettings", () => {
