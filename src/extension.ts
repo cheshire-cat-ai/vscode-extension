@@ -89,7 +89,7 @@ export async function activate(context: ExtensionContext) {
 	
 	if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
 		isCompatible = false
-		window.showInformationMessage("Your LLM configuration is not supported!");
+		window.showWarningMessage("Your LLM configuration is not supported!");
 		commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
 	} else if (!ccatConfig.ApiKey) {
 		commands.executeCommand('workbench.action.openWalkthrough', `${extId}#firstInstall`, true);
@@ -142,7 +142,7 @@ export async function activate(context: ExtensionContext) {
 			const selectionRange = new Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
 			if (ModelConfig.includes(updatedConfig.LanguageModel, 3)) {
-				window.showErrorMessage("Automated commenting is only available with OpenAI or Cohere models");
+				window.showErrorMessage("Automated commenting is only available with OpenAI models");
 			} else {
 				cat.send(highlighted, {
 					use_declarative_memory: false,
