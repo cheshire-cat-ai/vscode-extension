@@ -6,7 +6,7 @@
   "description": "VSCode extension to communicate with the Cheshire Cat AI!",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.79.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Machine Learning"
@@ -14,6 +14,10 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cheshire-cat-ai/vscode-extension.git"
+  },
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -43,7 +47,7 @@
         "id": "firstInstall",
         "title": "Hello, Dear!",
         "description": "First installation settings",
-        "icon": "assets/chechire-cat-ai.svg",
+        "icon": "assets/chechire-cat-ai.png",
         "steps": [
           {
             "id": "setLLM",
@@ -121,18 +125,21 @@
       ],
       "commandPalette": [
         {
-            "command": "cheshire-cat-ai.toSettings",
-            "when": "false"
+          "command": "cheshire-cat-ai.toSettings",
+          "when": "false"
         },
         {
           "command": "cheshire-cat-ai.fetchPlugins",
           "when": "false"
         }
-    ]
+      ]
     }
   },
   "scripts": {
-    "vscode:prepublish": "pnpm run compile",
+    "vscode:prepublish": "npm run esbuild-base -- --minify",
+    "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base -- --sourcemap",
+    "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
@@ -147,6 +154,7 @@
     "@typescript-eslint/eslint-plugin": "^6.2.0",
     "@typescript-eslint/parser": "^6.2.0",
     "@vscode/test-electron": "^2.3.3",
+    "esbuild": "^0.18.17",
     "eslint": "^8.46.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
