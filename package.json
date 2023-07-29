@@ -1,6 +1,6 @@
 {
   "name": "cheshire-cat-ai",
-  "publisher": "Cheshire-Cat-AI",
+  "publisher": "CheshireCatAI",
   "displayName": "Cheshire Cat AI",
   "icon": "assets/icon.png",
   "description": "VSCode extension to communicate with the Cheshire Cat AI!",
