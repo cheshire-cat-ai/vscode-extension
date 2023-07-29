@@ -8,56 +8,63 @@ const ModelConfig = [
 	"HuggingFace Hub | starcoder"
 ] as const;
 
+const AcceptedConfig = [
+	"LLMOpenAIChatConfig",
+	"LLMOpenAIConfig",
+	"LLMCohereConfig",
+	"LLMHuggingFaceHubConfig"
+] as const;
+
 const extId = "CheshireCatAI.cheshire-cat-ai";
 
-function getModelConfig(llm: string, apiKey: string) {
-	let name = "", requestBody = {};
-	switch (llm as typeof ModelConfig[number]) {
-		case "ChatGPT | gpt-3.5-turbo": {
-			name = "LLMOpenAIChatConfig";
-			requestBody = {
+const getModelConfig = (llm: string, apiKey: string) => {
+	const modelsConfig = {
+		"ChatGPT | gpt-3.5-turbo": {
+			name: "LLMOpenAIChatConfig",
+			requestBody: {
 				"openai_api_key": apiKey,
 				"model_name": "gpt-3.5-turbo"
-			};
-			break;
-		}
-		case "GPT-3 | text-davinci-003": {
-			name = "LLMOpenAIConfig";
-			requestBody = {
+			}
+		},
+		"GPT-3 | text-davinci-003": {
+			name: "LLMOpenAIConfig",
+			requestBody: {
 				"openai_api_key": apiKey,
 				"model_name": "text-davinci-003"
-			};
-			break;
-		}
-		case "Cohere | command": {
-			name = "LLMCohereConfig";
-			requestBody = {
+			}
+		},
+		"Cohere | command": {
+			name: "LLMCohereConfig",
+			requestBody: {
 				"cohere_api_key": apiKey,
 				"model": "command"
-			};
-			break;
-		}
-		case "HuggingFace Hub | starcoder": {
-			name = "LLMHuggingFaceHubConfig";
-			requestBody = {
+			}
+		},
+		"HuggingFace Hub | starcoder": {
+			name: "LLMHuggingFaceHubConfig",
+			requestBody: {
 				"repo_id": "bigcode/starcoder",
 				"huggingfacehub_api_token": apiKey
-			};
-			break;
+			}
 		}
-		default:
-			name = "LLMDefaultConfig";
-			requestBody = {};
 	}
-	return {
-		name, 
-		requestBody
-	};
+	const model = llm as keyof typeof modelsConfig
+	if (!ModelConfig.includes(model)) {
+		return {
+			name: "LLMDefaultConfig",
+			requestBody: {}
+		}
+	} else {
+		return modelsConfig[model]
+	}
 }
 
-export function activate(context: ExtensionContext) {
+const getConfig = () => workspace.getConfiguration('CheshireCatAI')
+
+export async function activate(context: ExtensionContext) {
 	// Get extension configuration
-	const ccatConfig = workspace.getConfiguration('CheshireCatAI');
+	const ccatConfig = getConfig();
+	let hasPlugin = false, isCompatible = true
 
 	// Initialize Cat Client
 	const cat = new CatClient({
@@ -77,39 +84,50 @@ export function activate(context: ExtensionContext) {
 		window.showInformationMessage("The Cheshire Cat disappeared!");
 	});
 
-	// Open setup page on activation
-	// commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`);
-
-	if (ccatConfig.ApiKey === "") {
-		commands.executeCommand(`workbench.action.openWalkthrough`, `${extId}#firstInstall`, true);
+	const settings = await cat.api?.settingsLargeLanguageModel.getLlmSettings()
+	const selected = settings?.settings.find(v => v.name === settings.selected_configuration)
+	
+	if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
+		isCompatible = false
+		window.showInformationMessage("Your LLM configuration is not supported!");
+		commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
+	} else if (!ccatConfig.ApiKey) {
+		commands.executeCommand('workbench.action.openWalkthrough', `${extId}#firstInstall`, true);
 	}
 
-	// Command to open extension settings page
-	const toSettings = commands.registerCommand("cheshire-cat-ai.toSettings", () => {
+	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.toSettings", () => {
 		commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
-	});
+	}));
 
-	const restartSettings = commands.registerCommand("cheshire-cat-ai.restartSettings", async () => {
+	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.refreshLLM", async () => {
 		window.showWarningMessage("Updating LLM configuration...");
-		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
-		let llmSetting = getModelConfig(updatedConfig.LanguageModel, updatedConfig.ApiKey);
-		await cat.api?.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
+		const updatedConfig = getConfig();
+		cat.reset()
+		cat.init()
+		if (!isCompatible) {
+			let llmSetting = getModelConfig(updatedConfig.LanguageModel, updatedConfig.ApiKey);
+			await cat.api?.settingsLargeLanguageModel.upsertLlmSetting(llmSetting.name, llmSetting.requestBody);
+		}
 		window.showInformationMessage("LLM configuration updated successfully!");
-	});
+	}));
 
-	const fetchPlugins = commands.registerCommand("cheshire-cat-ai.fetchPlugins", async () => {
+	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.fetchPlugins", async () => {
 		const plugins = await cat.api?.plugins.listAvailablePlugins();
-		const hasPlugin = plugins?.installed.some(v => v.id === 'cat_code_commenter');
+		hasPlugin = plugins?.installed.some(v => v.id === 'cat_code_commenter') ?? false;
 		if (hasPlugin) {
 			window.showInformationMessage("Plugin installed successfully!");
 		} else {
 			window.showErrorMessage("You didn't install the Code Commenter plugin correctly!");
 		}
-	});
+	}));
 
-	// Command to comment the code
-	const commentCode = commands.registerCommand("cheshire-cat-ai.commentCode", () => {
-		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
+	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.commentCode", () => {
+		if (!hasPlugin) {
+			window.showErrorMessage("You didn't install the Code Commenter plugin!");
+			return
+		}
+
+		const updatedConfig = getConfig();
 
 		if (["HuggingFace Hub | starcoder", "Cohere | command"].includes(updatedConfig.LanguageModel)) {
 			window.showErrorMessage("This LLM does not support this command");
@@ -148,11 +166,15 @@ export function activate(context: ExtensionContext) {
 				});
 			}
 		}
-	});
+	}));
 
+	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
+		if (!hasPlugin) {
+			window.showErrorMessage("You didn't install the Code Commenter plugin!");
+			return
+		}
 
-	const makeFunction = commands.registerCommand("cheshire-cat-ai.makeFunction", () => {
-		const updatedConfig = workspace.getConfiguration('CheshireCatAI');
+		const updatedConfig = getConfig();
 
 		if ([""].includes(updatedConfig.LanguageModel)) {
 			window.showErrorMessage("This LLM does not support this command");
@@ -175,7 +197,7 @@ export function activate(context: ExtensionContext) {
 			} as any);
 			
 			cat.onMessage(data => {
-				const updatedConfig = workspace.getConfiguration('CheshireCatAI');
+				const updatedConfig = getConfig();
 				if (ModelConfig.includes(updatedConfig.LanguageModel, 2)) {
 					editor.edit(editBuilder => {
 						const createdFunction = `${highlighted}\n${data.content}`
@@ -192,13 +214,7 @@ export function activate(context: ExtensionContext) {
 			});
 		}
 		
-	});
-
-	context.subscriptions.push(restartSettings);
-	context.subscriptions.push(toSettings);
-	context.subscriptions.push(commentCode);
-	context.subscriptions.push(fetchPlugins);
-	context.subscriptions.push(makeFunction);
+	}));
 }
 
 export function deactivate() {}

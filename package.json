@@ -30,8 +30,8 @@
         "title": "Cheshire Cat AI: Comment Code"
       },
       {
-        "command": "cheshire-cat-ai.restartSettings",
-        "title": "Cheshire Cat AI: Restart Settings"
+        "command": "cheshire-cat-ai.refreshLLM",
+        "title": "Cheshire Cat AI: Restart LLM Settings"
       },
       {
         "command": "cheshire-cat-ai.fetchPlugins",
