@@ -4,7 +4,7 @@
   "displayName": "Cheshire Cat AI",
   "icon": "assets/icon.png",
   "description": "VSCode extension to communicate with the Cheshire Cat AI!",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -46,30 +46,28 @@
       {
         "id": "firstInstall",
         "title": "Hello, Dear!",
-        "description": "First installation settings",
-        "icon": "assets/chechire-cat-ai.png",
+        "description": "Cat plugin installation step",
+        "icon": "assets/icon.png",
         "steps": [
           {
-            "id": "setLLM",
-            "title": "Choose a Langue Model",
-            "description": "Configure a Large Language Model.\n[Configure](command:cheshire-cat-ai.toSettings)",
-            "media": {
-              "markdown": "assets/step1.md"
-            },
-            "completionEvents": [
-              "onCommand:cheshire-cat-ai.toSettings"
-            ]
-          },
-          {
             "id": "downloadPlugin",
-            "title": "Download the Cat plugin",
-            "description": "Download and install the Cat Code Commenter plugin.\n[Download](https://github.com/nicola-corbellini/cat_code_commenter/archive/refs/heads/main.zip)",
+            "title": "Download the Code Commenter plugin",
+            "description": "Download and install the Code Commenter plugin, then reload VSCode.\n[Download](https://github.com/nicola-corbellini/cat_code_commenter/archive/refs/heads/main.zip)",
             "media": {
               "markdown": "assets/step2.md"
             },
             "completionEvents": [
-              "onCommand:cheshire-cat-ai.fetchPlugins"
+              "onCommand:cheshire-cat-ai.fetchPlugins",
+              "onContext:hasPlugin == true"
             ]
+          },
+          {
+            "id": "moreInfo",
+            "title": "More info",
+            "description": "Thank you for downloading the extension.\nIf you have any suggestion, please consider reaching us out.",
+            "media": {
+              "markdown": "assets/step1.md"
+            }
           }
         ]
       }
@@ -135,6 +133,14 @@
         {
           "command": "cheshire-cat-ai.fetchPlugins",
           "when": "false"
+        },
+        {
+          "command": "cheshire-cat-ai.commentCode",
+          "group": "CheshireCat"
+        },
+        {
+          "command": "cheshire-cat-ai.makeFunction",
+          "group": "CheshireCat"
         }
       ]
     }

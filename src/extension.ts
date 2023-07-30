@@ -91,12 +91,13 @@ export async function activate(context: ExtensionContext) {
 	
 	if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
 		isCompatible = false
-		window.showWarningMessage("Your LLM configuration is not supported!");
+		window.showWarningMessage("Your LLM configuration is not supported! Please, update your settings");
 		commands.executeCommand('workbench.action.openSettings', `@ext:${extId}`);
 	} else if (!hasPlugin) {
 		commands.executeCommand('workbench.action.openWalkthrough', `${extId}#firstInstall`, true);
 	} else {
 		const updatedConfig = getConfig()
+		console.log(selected)
 		//updatedConfig.update('CheshireCatAI.LanguageModel', selected.value)
 	}
 

@@ -1,14 +1,5 @@
 # Thank you for downloading our extension
 
-> **Note**  
-> Before you can start using the extension it's mandatory you set a Language Model and its API key.  
-> To confirm your setting run `Cheshire Cat AI: Restart Settings` on the command palette (`CTRL`+`Shift`+P)
-
-This is an extension for the Cheshire Cat AI framework.  
-Currently, the extension allows commenting code snippets using many Language Models. Other features are on the way.
-
-## More info
-
 If you like our extension, please consider leaving a ⭐ to the [repository](https://github.com/cheshire-cat-ai/vscode-extension).
 
 The official project is the [Cheshire Cat AI](https://github.com/cheshire-cat-ai/core).
