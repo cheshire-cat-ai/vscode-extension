@@ -21,16 +21,16 @@ const extId = "CheshireCatAI.cheshire-cat-ai";
 
 const getConfig = () => workspace.getConfiguration('CheshireCatAI')
 
-export async function activate(context: ExtensionContext) {
+const generateClient = (instant = true) => {
 	// Get extension configuration
 	const ccatConfig = getConfig();
-
 	// Initialize Cat Client
-	const cat = new CatClient({
+	return new CatClient({
 		authKey: ccatConfig.AuthKey,
 		baseUrl: ccatConfig.BaseUrl,
 		port: ccatConfig.Port,
 		secure: ccatConfig.Secure,
+		instant,
 		ws: {
 			path: ccatConfig.WebsocketPath,
 			onFailed: (err) => {
@@ -45,6 +45,11 @@ export async function activate(context: ExtensionContext) {
 	}).onError(err => {
 		window.showErrorMessage(err.description);
 	});
+}
+
+export async function activate(context: ExtensionContext) {
+	// Initialize Cat Client
+	let cat = generateClient()
 
 	let isCompatible = true
 	
@@ -79,6 +84,7 @@ export async function activate(context: ExtensionContext) {
 	}));
 
 	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.refreshConnection", () => {
+		cat = generateClient(false)
 		cat.reset()
 		cat.init()
 	}));
