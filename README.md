@@ -8,6 +8,10 @@ Currently, the extension has two features:
 1. generating automatic comments on a portion of selected code,
 2. generating a function starting from the name and a comment.
 
+## Requirements
+
+The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here](https://github.com/nicola-corbellini/cat_code_commenter)).
+
 ## Usage
 
 ### Comment code
@@ -23,10 +27,6 @@ To use it highlight some code → right-click → select `CheshireCat: Make func
 > **Warning**
 > This extension relies on the Cheshire Cat and expect to find a running instance of it.
 
-## Requirements
-
-The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here](https://github.com/nicola-corbellini/cat_code_commenter)).
-
 ## Extension Settings
 
 > **Note**
@@ -36,16 +36,15 @@ This extension contributes the following settings:
 
 - `CheshireCatAI.BaseUrl`: connection URL. Default to `localhost`.
 - `CheshireCatAI.Port`: connection port. Default to `1865`.
-- `CheshireCatAI.LanguageModel`: Language Model to use to comment the code. Default to `ChatGPT | gpt-3.5-turbo`.
 - `CheshireCatAI.WebsocketPath`: Language Model to use to comment the code. Default to `ws`.
-- `CheshireCatAI.ApiKey`: Personal API key from the Language Model vendor account.
 - `CheshireCatAI.AuthKey`: Personal key to authenticate the Cheshire Cat endpoints. **(Optional)**
 
-Once set your preferences, you can make them effective with `CTRL`+`Shift`+p → `Cheshire Cat AI: Restart Settings`.
+The extension automatically reads the language model settings from the Cat.
+Please, make sure your instance of the Cat is set on a [supported](#currently-available-language-models) language model, otherwise configure one in the "Settings" page.
 
 ### Currently available Language Models
 
-By now, we only support `gpt-3.5-turbo`, `text-davinci-003` from OpenAI, `command` from Cohere and `starcoder` from HugginFace Hub. 
+By now, we only support `gpt-3.5-turbo`, `text-davinci-003` from OpenAI and AzureOpenAI, `command` from Cohere and `starcoder` from HugginFace Hub. 
 
 > Tip: for the smoothest experience, we recommend using ChatGPT.
 
