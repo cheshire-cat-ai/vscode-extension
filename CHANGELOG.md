@@ -1,9 +1,32 @@
 # Change Log
 
-All notable changes to the "cheshire-cat-ai" extension will be documented in this file.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [0.0.1] - 29/07/2023
 
-## [Unreleased]
+### Added
 
-- Initial release
+- `Comment Code` command
+
+## [0.0.2] - 29/07/2023
+
+### Fixed
+
+- Missing package `ccat-api`
+
+## [0.0.3] - 29/07/2023
+
+### Fixed
+
+- Walkthrough link
+
+## [0.0.4] - 29/07/2023
+
+### Fixed
+
+- Updated walkthroughs
+
+### Removed
+
+- LLM settings

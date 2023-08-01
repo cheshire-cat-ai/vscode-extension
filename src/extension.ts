@@ -17,7 +17,6 @@ const getConfig = () => workspace.getConfiguration('CheshireCatAI')
 export async function activate(context: ExtensionContext) {
 	// Get extension configuration
 	const ccatConfig = getConfig();
-	let hasPlugin = false, isCompatible = true
 
 	// Initialize Cat Client
 	const cat = new CatClient({
@@ -36,17 +35,25 @@ export async function activate(context: ExtensionContext) {
 		window.showInformationMessage("The Cheshire Cat appeared!");
 	}).onDisconnected(() => {
 		window.showInformationMessage("The Cheshire Cat disappeared!");
+	}).onError(err => {
+		window.showErrorMessage(err.description);
 	});
 
-	const settings = await cat.api?.settingsLargeLanguageModel.getLlmSettings()
-	const selected = settings?.settings.find(v => v.name === settings.selected_configuration)
-	const plugins = await cat.api?.plugins.listAvailablePlugins();
-	hasPlugin = plugins?.installed.some(v => v.id === 'cat_code_commenter') ?? false;
-	
-	if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
-		isCompatible = false
-		window.showWarningMessage("Your LLM configuration is not supported! Please, update your cat's settings");
+	const checkPlugin = async () => {
+		const plugins = await cat.api?.plugins.listAvailablePlugins();
+		return plugins?.installed.some(v => v.id === 'cat_code_commenter') ?? false;
 	}
+
+	const checkLLM = async () => {
+		const settings = await cat.api?.settingsLargeLanguageModel.getLlmSettings();
+		const selected = settings?.settings.find(v => v.name === settings.selected_configuration)
+		if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
+			window.showWarningMessage("Your LLM configuration is not supported! Please, update your cat's settings");
+		}
+		return selected?.name;
+	}
+
+	let hasPlugin = await checkPlugin(), currentLLM = await checkLLM() ?? '', isCompatible = currentLLM !== undefined;
 
 	if (!hasPlugin) {
 		commands.executeCommand('workbench.action.openWalkthrough', `${extId}#firstInstall`, true);
@@ -62,12 +69,18 @@ export async function activate(context: ExtensionContext) {
 	}));
 
 	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.fetchPlugins", async () => {
-		const plugins = await cat.api?.plugins.listAvailablePlugins();
-		hasPlugin = plugins?.installed.some(v => v.id === 'cat_code_commenter') ?? false;
+		hasPlugin = await checkPlugin();
 		if (hasPlugin) {
 			window.showInformationMessage("Plugin installed successfully!");
 		} else {
 			window.showErrorMessage("You didn't install the Code Commenter plugin correctly!");
+		}
+	}));
+
+	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.fetchLLM", async () => {
+		isCompatible = (await checkLLM()) !== undefined;
+		if (isCompatible) {
+			window.showInformationMessage("Your current LLM is compatible!");
 		}
 	}));
 
@@ -78,9 +91,7 @@ export async function activate(context: ExtensionContext) {
 			return
 		}
 
-		const updatedConfig = getConfig();
-
-		if (["HuggingFace Hub | starcoder", "Cohere | command"].includes(updatedConfig.LanguageModel)) {
+		if (["LLMHuggingFaceHubConfig", "LLMCohereConfig"].includes(currentLLM)) {
 			window.showErrorMessage("This LLM does not support this command");
 			return
 		}
@@ -122,9 +133,7 @@ export async function activate(context: ExtensionContext) {
 			return
 		}
 
-		const updatedConfig = getConfig();
-
-		if ([""].includes(updatedConfig.LanguageModel)) {
+		if ([""].includes(currentLLM)) {
 			window.showErrorMessage("This LLM does not support this command");
 			return
 		}
