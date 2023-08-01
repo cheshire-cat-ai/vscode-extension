@@ -4,7 +4,7 @@
   "displayName": "Cheshire Cat AI",
   "icon": "assets/icon.png",
   "description": "VSCode extension to communicate with the Cheshire Cat AI!",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.80.0"
   },
