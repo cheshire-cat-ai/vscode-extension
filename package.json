@@ -38,8 +38,12 @@
         "title": "Cheshire Cat: Fetch Plugin"
       },
       {
+        "command": "cheshire-cat-ai.fetchLLM",
+        "title": "Cheshire Cat: Fetch Language Model"
+      },
+      {
         "command": "cheshire-cat-ai.makeFunction",
-        "title": "Cheshire Cat AI: Function from comment"
+        "title": "Cheshire Cat AI: Function From Comment"
       }
     ],
     "walkthroughs": [
