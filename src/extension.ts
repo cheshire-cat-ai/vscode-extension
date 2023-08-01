@@ -93,7 +93,7 @@ export async function activate(context: ExtensionContext) {
 	}));
 
 	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.fetchLLM", async () => {
-		await checkLLM();
+		currentLLM = await checkLLM();
 		if (isCompatible) {
 			window.showInformationMessage("Your current LLM is compatible!");
 		}
@@ -174,7 +174,7 @@ export async function activate(context: ExtensionContext) {
 						editBuilder.replace(selectionRange, createdFunction);
 					})
 			}).onError(() => {
-				window.showErrorMessage("Something went wrong. Try again please");
+				window.showErrorMessage("Something went wrong. Please try again.");
 			});
 		}
 		
