@@ -30,8 +30,8 @@
         "title": "Cheshire Cat AI: Comment Code"
       },
       {
-        "command": "cheshire-cat-ai.refreshLLM",
-        "title": "Cheshire Cat AI: Restart LLM Settings"
+        "command": "cheshire-cat-ai.refreshConnection",
+        "title": "Cheshire Cat AI: Refresh WebSocket Connection"
       },
       {
         "command": "cheshire-cat-ai.fetchPlugins",
@@ -90,27 +90,15 @@
           "default": "ws",
           "description": "Websocket path to which connect"
         },
-        "CheshireCatAI.LanguageModel": {
-          "type": "string",
-          "default": "ChatGPT | gpt-3.5-turbo",
-          "enum": [
-            "ChatGPT | gpt-3.5-turbo",
-            "GPT-3 | text-davinci-003",
-            "Cohere | command",
-            "HuggingFace Hub | falcon-7b-instruct",
-            "HuggingFace Hub | starcoder"
-          ],
-          "description": "Choose and configure your favourite Large Language Model"
-        },
-        "CheshireCatAI.ApiKey": {
-          "type": "string",
-          "default": null,
-          "description": "Personal API key on Language Model vendor's account"
-        },
         "CheshireCatAI.AuthKey": {
           "type": "string",
           "default": null,
-          "description": "(Optional) Personal key to authenticate the Cheshire Cat endpoints"
+          "description": "Personal key to authenticate the Cheshire Cat endpoints"
+        },
+        "CheshireCatAI.Secure": {
+          "type": "boolean",
+          "default": false,
+          "description": "Set a secure connection for websocket and endpoints"
         }
       }
     },
