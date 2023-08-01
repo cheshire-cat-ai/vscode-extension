@@ -10,6 +10,13 @@ const AcceptedConfig = [
 	"LLMAzureOpenAIChatConfig"
 ] as const;
 
+const AcceptedModels = [
+	"gpt",
+	"command",
+	"text-davinci-003",
+	"bigcode/starcoder"
+] as const; 
+
 const extId = "CheshireCatAI.cheshire-cat-ai";
 
 const getConfig = () => workspace.getConfiguration('CheshireCatAI')
@@ -39,21 +46,29 @@ export async function activate(context: ExtensionContext) {
 		window.showErrorMessage(err.description);
 	});
 
+	let isCompatible = true
+	
 	const checkPlugin = async () => {
 		const plugins = await cat.api?.plugins.listAvailablePlugins();
-		return plugins?.installed.some(v => v.id === 'cat_code_commenter') ?? false;
+		return plugins?.installed.some(v => v.id.startsWith('cat_code_commenter')) ?? false;
 	}
-
+	
 	const checkLLM = async () => {
 		const settings = await cat.api?.settingsLargeLanguageModel.getLlmSettings();
 		const selected = settings?.settings.find(v => v.name === settings.selected_configuration)
-		if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])) {
-			window.showWarningMessage("Your LLM configuration is not supported! Please, update your cat's settings");
+		const modelName = (selected?.value['model'] || selected?.value['model_name'] || selected?.value['repo_id']) as string | undefined;
+		if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])
+			|| !AcceptedModels.some(v => modelName?.startsWith(v))) {
+			isCompatible = false
+			window.showWarningMessage("Your LLM configuration is not supported! Please, update your Cat's settings");
 		}
-		return selected?.name;
+		return {
+			config: selected?.name ?? "",
+			model: modelName ?? ""
+		};
 	}
-
-	let hasPlugin = await checkPlugin(), currentLLM = await checkLLM() ?? '', isCompatible = currentLLM !== undefined;
+	
+	let hasPlugin = await checkPlugin(), currentLLM = await checkLLM();
 
 	if (!hasPlugin) {
 		commands.executeCommand('workbench.action.openWalkthrough', `${extId}#firstInstall`, true);
@@ -78,7 +93,7 @@ export async function activate(context: ExtensionContext) {
 	}));
 
 	context.subscriptions.push(commands.registerCommand("cheshire-cat-ai.fetchLLM", async () => {
-		isCompatible = (await checkLLM()) !== undefined;
+		await checkLLM();
 		if (isCompatible) {
 			window.showInformationMessage("Your current LLM is compatible!");
 		}
@@ -91,7 +106,7 @@ export async function activate(context: ExtensionContext) {
 			return
 		}
 
-		if (["LLMHuggingFaceHubConfig", "LLMCohereConfig"].includes(currentLLM)) {
+		if (["LLMHuggingFaceHubConfig", "LLMCohereConfig"].includes(currentLLM.config) || !isCompatible) {
 			window.showErrorMessage("This LLM does not support this command");
 			return
 		}
@@ -133,7 +148,7 @@ export async function activate(context: ExtensionContext) {
 			return
 		}
 
-		if ([""].includes(currentLLM)) {
+		if ([""].includes(currentLLM.config) || !isCompatible) {
 			window.showErrorMessage("This LLM does not support this command");
 			return
 		}
@@ -154,9 +169,16 @@ export async function activate(context: ExtensionContext) {
 			});
 			
 			cat.onMessage(data => {
-				editor.edit(editBuilder => {
-					editBuilder.replace(selectionRange, data.content);
-				});
+				if (currentLLM.config === "LLMHuggingFaceHubConfig") {
+					editor.edit(editBuilder => {
+						const createdFunction = `${highlighted}\n${data.content}`
+						editBuilder.replace(selectionRange, createdFunction);
+					})
+				} else {
+					editor.edit(editBuilder => {
+						editBuilder.replace(selectionRange, data.content); 
+					});
+				}
 			}).onError(() => {
 				window.showErrorMessage("Something went wrong. Try again please");
 			});
