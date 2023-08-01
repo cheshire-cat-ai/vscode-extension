@@ -169,16 +169,10 @@ export async function activate(context: ExtensionContext) {
 			});
 			
 			cat.onMessage(data => {
-				if (currentLLM.config === "LLMHuggingFaceHubConfig") {
 					editor.edit(editBuilder => {
 						const createdFunction = `${highlighted}\n${data.content}`
 						editBuilder.replace(selectionRange, createdFunction);
 					})
-				} else {
-					editor.edit(editBuilder => {
-						editBuilder.replace(selectionRange, data.content); 
-					});
-				}
 			}).onError(() => {
 				window.showErrorMessage("Something went wrong. Try again please");
 			});
