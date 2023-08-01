@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `Comment Code` command
+- `Function from comment` command
 
 ## [0.0.2] - 29/07/2023
 
@@ -21,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Walkthrough link
 
-## [0.0.4] - 29/07/2023
+## [0.0.4] - 01/08/2023
 
 ### Fixed
 
@@ -30,3 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - LLM settings
+
+## [0.0.5] - 01/08/2023
+
+### Added
+
+- Better check of compatible language models
+- Better printing of `Function from comment` for `starcoder` model

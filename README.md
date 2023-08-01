@@ -13,6 +13,9 @@ Currently, the extension has two features:
 
 The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here](https://github.com/nicola-corbellini/cat_code_commenter)).
 
+> **Warning**
+> This extension relies on the Cheshire Cat and expect to find a running instance of it. Please, remember to set a language model in the "Settings" page with the `admin` in the browser.
+
 ## Usage
 
 ### Comment code
@@ -24,10 +27,12 @@ To use it highlight some code → right-click → select `CheshireCat: Comment c
 
 ### Make function
 
-To use it highlight some code → right-click → select `CheshireCat: Make function`.
+To use it highlight some code → right-click → select `Cheshire Cat AI: Function From Comment`.
 
-> **Warning**
-> This extension relies on the Cheshire Cat and expect to find a running instance of it.
+### Other commands
+
+- `Cheshire Cat AI: Refresh WebSocket Connection`: allows refreshing the websocket connection with the Cat. This can be useful if, for any reason, VSCode loses the connection with the Cat.
+- `heshire Cat: Fetch Language Model`: allows updating the language model settings and check if the set model is compatible.
 
 ## Extension Settings
 
@@ -47,7 +52,7 @@ Please, make sure your instance of the Cat is set on a [supported](#currently-av
 
 ### Currently available Language Models
 
-By now, we only support `gpt-3.5-turbo`, `text-davinci-003` from OpenAI and AzureOpenAI, `command` from Cohere and `starcoder` from HugginFace Hub.
+By now, we only support `text-davinci-003` and any `gpt` model from [OpenAI](https://platform.openai.com/docs/models/) and AzureOpenAI, `command` from [Cohere](https://docs.cohere.com/docs/models) and `bigcode/starcoder` from [HugginFace Hub](https://huggingface.co/bigcode/starcoder).
 
 > Tip: for the smoothest experience, we recommend using ChatGPT.
 
