@@ -38,3 +38,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Better check of compatible language models
 - Better printing of `Function from comment` for `starcoder` model
+
+## [0.0.6] - 01/08/2023
+
+### Fixed
+
+- Minor bug during llm change
+
+### Updated
+
+- `Cheshire Cat AI: Refresh WebSocket Connection` to use new settings on refresh
