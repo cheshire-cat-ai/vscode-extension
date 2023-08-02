@@ -48,3 +48,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - `Cheshire Cat AI: Refresh WebSocket Connection` to use new settings on refresh
+
+## [0.0.7] - 02/08/2023
+
+### Fixed
+
+- Configuration name that prevented AzureOpenai to be used
