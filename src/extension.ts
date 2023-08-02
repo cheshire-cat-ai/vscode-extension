@@ -7,7 +7,7 @@ const AcceptedConfig = [
 	"LLMCohereConfig",
 	"LLMHuggingFaceHubConfig",
 	"LLMAzureOpenAIConfig",
-	"LLMAzureOpenAIChatConfig"
+	"LLMAzureChatOpenAIConfig"
 ] as const;
 
 const AcceptedModels = [
