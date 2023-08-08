@@ -11,7 +11,7 @@ Currently, the extension has two features:
 
 ## Requirements
 
-The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here](https://github.com/nicola-corbellini/cat_code_commenter)).
+The extension requires to have the Cheshire Cat installed and running (instructions [here](https://cheshire-cat-ai.github.io/docs/technical/getting-started/)) with the Cat Code Commenter plugin enabled (instructions [here](https://github.com/nicola-corbellini/ccat_code_commenter)).
 
 > **Warning**
 > This extension relies on the Cheshire Cat and expect to find a running instance of it. Please, remember to set a language model in the "Settings" page with the `admin` in the browser.
