@@ -54,3 +54,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Configuration name that prevented AzureOpenai to be used
+
+## [0.0.8] - 08/08/2023
+
+### Updated
+
+- Link to Cheshire Cat plugin
