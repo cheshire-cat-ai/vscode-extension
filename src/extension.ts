@@ -59,7 +59,7 @@ export async function activate(context: ExtensionContext) {
 	}
 	
 	const checkLLM = async () => {
-		const settings = await cat.api?.settingsLargeLanguageModel.getLlmSettings();
+		const settings = await cat.api?.largeLanguageModel.getLlmsSettings();
 		const selected = settings?.settings.find(v => v.name === settings.selected_configuration)
 		const modelName = (selected?.value['model'] || selected?.value['model_name'] || selected?.value['repo_id']) as string | undefined;
 		if (!selected || !AcceptedConfig.includes(selected.name as typeof AcceptedConfig[number])
@@ -124,6 +124,7 @@ export async function activate(context: ExtensionContext) {
 			// Get text selection
 			const selectionRange = new Range(selection.start.line, selection.start.character, selection.end.line, selection.end.character);
 			const highlighted = editor.document.getText(selectionRange);
+
 			cat.send(highlighted, {
 				use_declarative_memory: false,
 				use_procedural_memory: false,

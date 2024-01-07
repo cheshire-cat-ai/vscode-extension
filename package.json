@@ -3,8 +3,8 @@
   "publisher": "CheshireCatAI",
   "displayName": "Cheshire Cat AI",
   "icon": "assets/icon.png",
-  "description": "VSCode extension to communicate with the Cheshire Cat AI!",
-  "version": "0.0.8",
+  "description": "VSCode extension to communicate with the Cheshire Cat AI !",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.80.0"
   },
@@ -150,20 +150,20 @@
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "20.4.5",
-    "@types/vscode": "^1.80.0",
-    "@typescript-eslint/eslint-plugin": "^6.2.0",
-    "@typescript-eslint/parser": "^6.2.0",
-    "@vscode/test-electron": "^2.3.3",
-    "esbuild": "^0.18.17",
-    "eslint": "^8.46.0",
-    "glob": "^10.3.3",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "20.10.7",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.18.0",
+    "@typescript-eslint/parser": "^6.18.0",
+    "@vscode/test-electron": "^2.3.8",
+    "esbuild": "^0.19.11",
+    "eslint": "^8.56.0",
+    "glob": "^10.3.10",
     "mocha": "^10.2.0",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   },
   "dependencies": {
-    "ccat-api": "^0.6.1",
-    "generator-code": "^1.7.7"
+    "ccat-api": "^0.9.1",
+    "generator-code": "^1.8.2"
   }
 }

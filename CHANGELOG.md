@@ -60,3 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Updated
 
 - Link to Cheshire Cat plugin
+
+## [0.1.0] - 07/01/2024
+
+- Update the API Client to the latest version

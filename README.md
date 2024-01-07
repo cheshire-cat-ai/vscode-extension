@@ -34,7 +34,7 @@ To use it highlight some code → right-click → select `Cheshire Cat AI: Funct
 - `Cheshire Cat AI: Refresh WebSocket Connection`: allows refreshing the websocket connection with the Cat. This can be useful if, for any reason, VSCode loses the connection with the Cat.
 - `Cheshire Cat: Fetch Language Model`: allows updating the language model settings and check if the set model is compatible.
 
-### Change of LLM 
+### Change of LLM
 
 > **Note**
 > Please, rembemder to call `Cheshire Cat: Fetch Language Model`, when you change the language model in the Cat.
